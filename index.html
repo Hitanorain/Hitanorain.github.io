@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hitanorain 的游戏厅</title>
+<meta name="description" content="Hitanorain 做的网页游戏合集：星叶守望、企鹅跑酷、Moon英语。">
+<meta name="theme-color" content="#1b1636">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffd27a'/%3E%3Cstop offset='1' stop-color='%23ff8fc8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%231b1636'/%3E%3Cpath d='M40 12a20 20 0 1 0 12 28A16 16 0 0 1 40 12z' fill='url(%23g)'/%3E%3Ccircle cx='46' cy='18' r='3' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg0: #141029; --bg1: #241a4a; --bg2: #3b2a5e;
+    --card: rgba(255, 255, 255, 0.06); --card-hi: rgba(255, 255, 255, 0.1);
+    --line: rgba(255, 226, 170, 0.22); --text: #f4effc; --dim: #b8aed4; --gold: #ffd98a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; min-height: 100vh; color: var(--text);
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 170, 140, 0.28), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 30%, rgba(140, 120, 255, 0.18), transparent 70%),
+      linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 35%, var(--bg0) 100%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+  /* 星点 */
+  #stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .wrap { position: relative; z-index: 1; width: min(1180px, 100% - 32px); margin: 0 auto; }
+
+  header { text-align: center; padding: 72px 0 44px; }
+  .moon { width: 64px; height: 64px; margin: 0 auto 18px; border-radius: 50%; transform: rotate(-20deg);
+    box-shadow: inset 14px -6px 0 0 #ffd88a; filter: drop-shadow(0 0 14px rgba(255, 200, 140, 0.8)) drop-shadow(0 0 30px rgba(255, 150, 190, 0.4));
+    animation: float 5s ease-in-out infinite; }
+  h1 { margin: 0; font-family: "ZCOOL XiaoWei", serif; font-weight: normal; font-size: clamp(38px, 6vw, 60px); letter-spacing: 0.12em;
+    background: linear-gradient(90deg, #ffe7b0, #ffb8d8 60%, #c8b8ff); -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 30px rgba(255, 200, 160, 0.15); }
+  h1 .nb { white-space: nowrap; display: inline-block; }
+  .sub { margin: 12px 0 0; color: var(--dim); font-size: 16px; letter-spacing: 0.2em; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 26px; padding-bottom: 40px; }
+  .card { position: relative; display: flex; flex-direction: column; text-decoration: none; color: inherit;
+    border-radius: 22px; overflow: hidden; background: var(--card); border: 1px solid var(--line);
+    box-shadow: 0 10px 30px rgba(10, 5, 30, 0.35); backdrop-filter: blur(6px);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    animation: rise 0.6s ease both; }
+  .card:hover, .card:focus-visible { transform: translateY(-6px); background: var(--card-hi); border-color: var(--accent);
+    box-shadow: 0 18px 44px rgba(10, 5, 30, 0.5), 0 0 0 1px var(--accent), 0 0 34px color-mix(in srgb, var(--accent) 35%, transparent); outline: none; }
+  .thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #2a2148; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+  .card:hover .thumb img { transform: scale(1.06); }
+  .thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(20, 14, 40, 0.75)); }
+  .badge { position: absolute; z-index: 1; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: bold;
+    background: rgba(20, 14, 40, 0.65); border: 1px solid rgba(255, 255, 255, 0.25); backdrop-filter: blur(4px); }
+  .new { position: absolute; z-index: 1; top: 12px; right: 12px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: bold;
+    color: #2a1630; background: linear-gradient(90deg, #ffe08a, #ff9fc8); }
+  .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .title { display: flex; align-items: center; gap: 10px; }
+  .title .ic { font-size: 26px; }
+  .title h2 { margin: 0; font-family: "ZCOOL XiaoWei", serif; font-weight: normal; font-size: 28px; color: var(--accent); letter-spacing: 0.06em; }
+  .title small { color: var(--dim); font-size: 13px; }
+  .desc { margin: 0; color: #ddd4f0; font-size: 14.5px; line-height: 1.7; flex: 1; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 12px; padding: 3px 9px; border-radius: 8px; color: var(--dim); background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
+  .device { font-size: 12.5px; color: var(--dim); }
+  .play { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 999px; font-weight: bold; font-size: 14px;
+    color: #241634; background: var(--accent); box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 45%, transparent); transition: gap 0.2s ease; }
+  .card:hover .play { gap: 12px; }
+
+  footer { text-align: center; color: var(--dim); font-size: 13px; padding: 20px 0 48px; }
+  footer a { color: var(--gold); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+  @keyframes float { 50% { transform: rotate(-20deg) translateY(-6px); } }
+  @media (max-width: 520px) {
+    header { padding: 48px 0 30px; }
+    .grid { grid-template-columns: 1fr; gap: 18px; }
+    .sub { font-size: 14px; letter-spacing: 0.1em; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <header>
+    <div class="moon" aria-hidden="true"></div>
+    <h1>Hitanorain <span class="nb">的游戏厅</span></h1>
+    <p class="sub">挑一个，开始玩吧</p>
+  </header>
+  <main class="grid" id="grid"></main>
+  <footer>
+    用 Claude 一起做的小游戏 · <a href="https://github.com/Hitanorain" target="_blank" rel="noopener">GitHub @Hitanorain</a>
+  </footer>
+</div>
+
+<script>
+  // 想加新游戏：在这里加一项，并把 16:10 的截图放进 thumbs/
+  const GAMES = [
+    {
+      id: 'starleaf-wardens', icon: '🌙', name: '星叶守望', en: 'Starleaf Wardens', accent: '#c9b4ff', badge: '3D 塔防', isNew: true,
+      desc: '以大地为棋，以高地为剑。抬高地形、规划敌人路线、在高地上建塔，和月之仙子露娜一起守护月光古树。每一波还有变幻的天象。',
+      tags: ['地形塔防', '三张地图', '天象系统', '英雄技能'], device: '🖥 电脑 · 鼠标键盘',
+    },
+    {
+      id: 'penguin-run', icon: '🐧', name: '企鹅跑酷', en: 'Penguin Run', accent: '#ffb37a', badge: '3D 跑酷',
+      desc: '围着红围巾的小企鹅，沿着夕阳下的雪色海岸一路狂奔。换道、跳跃、肚皮滑行，躲开障碍，收集金币。',
+      tags: ['无尽跑酷', '夕阳海岸', '金币收集'], device: '🖥 📱 键盘或滑屏',
+    },
+    {
+      id: 'moon-english', icon: '🔤', name: 'Moon英语', en: 'Moon English', accent: '#8fe36a', badge: '儿童英语',
+      desc: '给小朋友的看图听音英语练习，像闯关一样一课一课往前走，难度参照 RAZ 分级（AA → J）。学一学、听一听、看一看、小测验。',
+      tags: ['看图听音', 'RAZ AA–J', '闯关学习'], device: '📱 🖥 手机平板电脑',
+    },
+  ];
+
+  const grid = document.getElementById('grid');
+  grid.innerHTML = GAMES.map((g, i) => `
+    <a class="card" href="https://hitanorain.github.io/${g.id}/" style="--accent:${g.accent};animation-delay:${0.08 + i * 0.1}s" aria-label="${g.name}">
+      <div class="thumb">
+        <img src="thumbs/${g.id}.jpg" alt="${g.name} 截图" loading="${i < 3 ? 'eager' : 'lazy'}" onerror="this.remove()">
+        <span class="badge">${g.badge}</span>
+        ${g.isNew ? '<span class="new">最近更新</span>' : ''}
+      </div>
+      <div class="body">
+        <div class="title"><span class="ic">${g.icon}</span><h2>${g.name}</h2><small>${g.en}</small></div>
+        <p class="desc">${g.desc}</p>
+        <div class="tags">${g.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        <div class="foot"><span class="device">${g.device}</span><span class="play">开始玩 <span aria-hidden="true">→</span></span></div>
+      </div>
+    </a>`).join('');
+
+  // 背景里缓缓闪烁的星点
+  const cv = document.getElementById('stars'), cx = cv.getContext('2d');
+  let stars = [];
+  function resize() {
+    const d = Math.min(2, devicePixelRatio || 1);
+    cv.width = innerWidth * d; cv.height = innerHeight * d; cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    cx.setTransform(d, 0, 0, d, 0, 0);
+    stars = Array.from({ length: Math.round(innerWidth * innerHeight / 9000) }, () => ({
+      x: Math.random() * innerWidth, y: Math.random() * innerHeight * 0.75, r: Math.random() * 1.3 + 0.3, p: Math.random() * 6, s: 0.5 + Math.random() * 1.5,
+    }));
+  }
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function draw(t) {
+    cx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of stars) {
+      const a = 0.25 + 0.6 * (0.5 + 0.5 * Math.sin(t / 1000 * s.s + s.p));
+      cx.fillStyle = `rgba(255, 244, 220, ${a * (1 - s.y / innerHeight)})`;
+      cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, Math.PI * 2); cx.fill();
+    }
+    if (!still) requestAnimationFrame(draw);
+  }
+  addEventListener('resize', () => { resize(); if (still) draw(0); });
+  resize();
+  requestAnimationFrame(draw);
+</script>
+</body>
+</html>
