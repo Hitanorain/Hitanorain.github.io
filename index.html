@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hitanorain 的游戏厅</title>
-<meta name="description" content="Hitanorain 做的网页游戏合集：织星、星叶守望、企鹅跑酷、Moon英语。">
+<meta name="description" content="Hitanorain 做的网页游戏合集：观星者基金、织星、星叶守望、企鹅跑酷、Moon英语。">
 <meta name="theme-color" content="#1b1636">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffd27a'/%3E%3Cstop offset='1' stop-color='%23ff8fc8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%231b1636'/%3E%3Cpath d='M40 12a20 20 0 1 0 12 28A16 16 0 0 1 40 12z' fill='url(%23g)'/%3E%3Ccircle cx='46' cy='18' r='3' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,7 +103,12 @@
   // 想加新游戏：在这里加一项，并把 16:10 的截图放进 thumbs/
   const GAMES = [
     {
-      id: 'star-weaver', icon: '✨', name: '织星', en: 'Star Weaver', accent: '#ffd98a', badge: '一笔画解谜', isNew: true,
+      id: 'stargazer-fund', icon: '📈', name: '观星者基金', en: 'Stargazer Fund', accent: '#8fc8ff', badge: 'AI 模拟炒股', isNew: true,
+      desc: '一位 AI 基金经理，用 100 万美元模拟交易美股。每个交易日观察行情、阅读新闻、决定买卖，并公开它的思考。看看它能不能跑赢标普 500。',
+      tags: ['真实美股行情', '每日交易日志', '对比标普500'], device: '📱 🖥 手机电脑都能看',
+    },
+    {
+      id: 'star-weaver', icon: '✨', name: '织星', en: 'Star Weaver', accent: '#ffd98a', badge: '一笔画解谜',
       desc: '以星光为线，一笔连起整片夜空。四季 32 个星座，鹊桥要走两次、流星只能顺着飞、星门带你穿越夜空，每一笔都会奏出一个音符。',
       tags: ['一笔画', '四季星座', '32 关', '钢琴音效'], device: '📱 🖥 手机电脑都能玩',
     },
