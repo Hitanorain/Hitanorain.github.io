@@ -84,6 +84,16 @@
   .archive .enter { flex: 0 0 auto; padding: 9px 18px; border-radius: 999px; font-weight: bold; font-size: 14px; color: #241634; background: #e8c27a; }
   @media (max-width: 520px) { .archive { flex-wrap: wrap; padding: 16px 18px; gap: 14px; } .archive .enter { margin-left: 66px; } }
 
+  .bgm { position: fixed; z-index: 5; top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px; width: 42px; height: 42px; padding: 0; border-radius: 50%; cursor: pointer;
+    display: grid; place-items: center; color: var(--gold); background: rgba(20, 14, 40, 0.55); border: 1px solid var(--line); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease; }
+  .bgm:hover, .bgm:focus-visible { background: rgba(60, 44, 110, 0.6); border-color: rgba(255, 217, 138, 0.5); outline: none; }
+  .bgm svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .bgm .slash { display: none; }
+  .bgm.off { color: var(--dim); opacity: 0.7; }
+  .bgm.off .slash { display: inline; }
+  .bgm.playing { box-shadow: 0 0 18px rgba(255, 217, 138, 0.25); }
+
   footer { text-align: center; color: var(--dim); font-size: 13px; padding: 20px 0 48px; }
   footer a { color: var(--gold); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
@@ -100,6 +110,7 @@
 </head>
 <body>
 <canvas id="stars"></canvas>
+<button class="bgm" id="bgm" type="button" aria-label="背景音乐" title="背景音乐：开"><svg viewBox="0 0 24 24"><path d="M9 17.5V5.5l10-2v12"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/><path class="slash" d="M3.5 3.5l17 17"/></svg></button>
 <div class="wrap">
   <header>
     <div class="moon" aria-hidden="true"></div>
@@ -197,6 +208,125 @@
   addEventListener('resize', () => { resize(); if (still) draw(0); });
   resize();
   requestAnimationFrame(draw);
+
+  // 背景音乐：Web Audio 实时合成（柔和的和弦铺底 + 八音盒），不用音频文件。
+  // 浏览器不让自动播放，所以第一次点击/按键后才开始；右上角按钮开关，状态记在 localStorage。
+  (() => {
+    const KEY = 'hub-bgm', btn = document.getElementById('bgm');
+    let on = true;
+    try { on = localStorage.getItem(KEY) !== 'off'; } catch (e) {}
+    let ac = null, bus, master, timer = 0, step = 0, nextT = 0, stopTimer = 0;
+    const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+    const BEAT = 60 / 66;
+    // 四小节循环：Dmaj9 – Bm9 – Gmaj9 – A6sus（低音, 和弦音…, 高音区用来写八音盒旋律）
+    const CHORDS = [
+      [38, [57, 61, 64, 66], [69, 73, 76, 78, 81]],
+      [35, [54, 57, 61, 62], [66, 69, 73, 74, 78]],
+      [31, [54, 57, 59, 62], [66, 69, 71, 74, 78]],
+      [33, [52, 57, 59, 62], [64, 69, 71, 74, 76]],
+    ];
+    const PATTERN = [1, 0, 0.6, 0.5, 0.9, 0, 0.5, 0.3]; // 每个八分音符出声的概率
+
+    function setup() {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      ac = new AC();
+      master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
+      const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2400;
+      // 用衰减噪声生成混响的脉冲响应
+      const len = Math.floor(ac.sampleRate * 3.2), ir = ac.createBuffer(2, len, ac.sampleRate);
+      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+      const verb = ac.createConvolver(); verb.buffer = ir;
+      const wet = ac.createGain(); wet.gain.value = 0.6;
+      bus = ac.createGain();
+      bus.connect(lp); lp.connect(master); lp.connect(verb); verb.connect(wet); wet.connect(master);
+      return true;
+    }
+    function pad(m, t, dur, vol) {
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + 1.6);
+      g.gain.setValueAtTime(vol, t + dur - 0.4);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 1.8);
+      g.connect(bus);
+      for (const det of [-6, 6]) {
+        const o = ac.createOscillator(); o.type = 'triangle'; o.frequency.value = hz(m); o.detune.value = det;
+        o.connect(g); o.start(t); o.stop(t + dur + 2);
+      }
+    }
+    function bell(m, t, vol) {
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 2.6);
+      g.connect(bus);
+      [[1, 1], [2, 0.18], [3.01, 0.06]].forEach(([k, a]) => {
+        const o = ac.createOscillator(), og = ac.createGain();
+        o.type = 'sine'; o.frequency.value = hz(m) * k; og.gain.value = a;
+        o.connect(og); og.connect(g); o.start(t); o.stop(t + 2.7);
+      });
+    }
+    let last = 2;
+    function schedule() {
+      while (nextT < ac.currentTime + 0.5) {
+        const [bass, mid, top] = CHORDS[Math.floor(step / 8) % 4], s = step % 8, t = nextT;
+        if (s === 0) {
+          pad(bass, t, BEAT * 4, 0.05);
+          mid.forEach(m => pad(m, t, BEAT * 4, 0.022));
+        }
+        if (Math.random() < PATTERN[s]) {
+          // 旋律多走级进，偶尔跳一下
+          last = Math.max(0, Math.min(top.length - 1, last + (Math.random() < 0.75 ? (Math.random() < 0.5 ? -1 : 1) : (Math.random() < 0.5 ? -2 : 2))));
+          bell(top[last], t + (Math.random() - 0.5) * 0.02, s === 0 ? 0.075 : 0.055);
+        }
+        step++; nextT += BEAT / 2;
+      }
+    }
+    function start() {
+      if (!ac && !setup()) return;
+      clearTimeout(stopTimer);
+      ac.resume();
+      if (!timer) { nextT = ac.currentTime + 0.1; timer = setInterval(schedule, 150); schedule(); }
+      master.gain.cancelScheduledValues(ac.currentTime);
+      master.gain.setValueAtTime(master.gain.value, ac.currentTime);
+      master.gain.linearRampToValueAtTime(0.9, ac.currentTime + 2.5);
+      btn.classList.add('playing');
+    }
+    function stop() {
+      btn.classList.remove('playing');
+      if (!ac) return;
+      master.gain.cancelScheduledValues(ac.currentTime);
+      master.gain.setValueAtTime(master.gain.value, ac.currentTime);
+      master.gain.linearRampToValueAtTime(0, ac.currentTime + 0.6);
+      clearTimeout(stopTimer);
+      stopTimer = setTimeout(() => { clearInterval(timer); timer = 0; ac.suspend(); }, 700);
+    }
+    function paint() {
+      btn.classList.toggle('off', !on);
+      btn.setAttribute('aria-pressed', String(on));
+      btn.title = '背景音乐：' + (on ? '开' : '关');
+    }
+    btn.addEventListener('click', () => {
+      on = !on;
+      try { localStorage.setItem(KEY, on ? 'on' : 'off'); } catch (e) {}
+      paint();
+      on ? start() : stop();
+    });
+    // 第一次和页面交互时开始播放（点音乐按钮本身交给上面的开关处理）
+    const kick = e => {
+      if (e.target.closest && e.target.closest('#bgm')) return;
+      ['pointerdown', 'keydown', 'touchend'].forEach(t => removeEventListener(t, kick, true));
+      if (on) start();
+    };
+    ['pointerdown', 'keydown', 'touchend'].forEach(t => addEventListener(t, kick, true));
+    // 切到别的标签页时暂停，回来再接着放
+    document.addEventListener('visibilitychange', () => {
+      if (!ac || !on || !btn.classList.contains('playing')) return;
+      if (document.hidden) { clearInterval(timer); timer = 0; ac.suspend(); }
+      else { ac.resume(); nextT = ac.currentTime + 0.1; timer = setInterval(schedule, 150); }
+    });
+    paint();
+  })();
 </script>
 </body>
 </html>
