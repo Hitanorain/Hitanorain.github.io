@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hitanorain 的游戏厅</title>
-<meta name="description" content="Hitanorain 做的网页游戏合集：观星者基金、织星、星叶守望、企鹅跑酷、Moon英语。">
+<meta name="description" content="Hitanorain 做的网页游戏合集：欢乐连连看、观星者基金、织星、星叶守望、企鹅跑酷、Moon英语。">
 <meta name="theme-color" content="#1b1636">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffd27a'/%3E%3Cstop offset='1' stop-color='%23ff8fc8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%231b1636'/%3E%3Cpath d='M40 12a20 20 0 1 0 12 28A16 16 0 0 1 40 12z' fill='url(%23g)'/%3E%3Ccircle cx='46' cy='18' r='3' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -132,7 +132,12 @@
   // 想加新游戏：在这里加一项，并把 16:10 的截图放进 thumbs/
   const GAMES = [
     {
-      id: 'little-glade', icon: '🏰', name: '小小林间', en: 'Little Glade', accent: '#a9c86a', badge: '3D 建造', isNew: true,
+      id: 'happy-link', icon: '🍓', name: '欢乐连连看', en: 'Happy Link', accent: '#ff8fb8', badge: '连连看', isNew: true,
+      desc: '找到两个一样的图案，用不超过两个拐弯的线把它们连起来消掉。水果、萌宠、海洋、甜品、花园、星空 6 个世界 60 关，还有重力关、造型关和石头关，配上欢快的音乐。',
+      tags: ['60 关', '重力关', '连击加分', '欢快音乐'], device: '📱 🖥 手机电脑都能玩',
+    },
+    {
+      id: 'little-glade', icon: '🏰', name: '小小林间', en: 'Little Glade', accent: '#a9c86a', badge: '3D 建造',
       desc: '没有网格，随手拖拽：画一道城墙就长出石砌塔楼，拉一下就盖起小屋。铺碎石小路、涂抹池塘放锦鲤，种下糖枫、白桦和巨杉，再看它们随四季和晴雨雷雪变换模样。',
       tags: ['自由建造', '北美树种', '四季天气', '池塘与鱼'], device: '🖥 电脑 · 鼠标拖拽',
     },
