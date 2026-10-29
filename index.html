@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hitanorain 的游戏厅</title>
-<meta name="description" content="Hitanorain 做的网页游戏合集：欢乐连连看、观星者基金、织星、星叶守望、企鹅跑酷、Moon英语。">
+<meta name="description" content="Hitanorain 做的网页游戏合集：欢乐连连看、观星者基金、织星、星叶守望、企鹅跑酷、Moon英语；还有影像放映厅里用代码渲染的短片《茶室》和网页动画《天外来客》。">
 <meta name="theme-color" content="#1b1636">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffd27a'/%3E%3Cstop offset='1' stop-color='%23ff8fc8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%231b1636'/%3E%3Cpath d='M40 12a20 20 0 1 0 12 28A16 16 0 0 1 40 12z' fill='url(%23g)'/%3E%3Ccircle cx='46' cy='18' r='3' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,7 +67,7 @@
   .tag { font-size: 12px; padding: 3px 9px; border-radius: 8px; color: var(--dim); background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); }
   .foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
   .device { font-size: 12.5px; color: var(--dim); }
-  .play { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 999px; font-weight: bold; font-size: 14px;
+  .play { flex: 0 0 auto; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 999px; font-weight: bold; font-size: 14px;
     color: #241634; background: var(--accent); box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 45%, transparent); transition: gap 0.2s ease; }
   .card:hover .play { gap: 12px; }
 
@@ -93,6 +93,26 @@
   .bgm.off { color: var(--dim); opacity: 0.7; }
   .bgm.off .slash { display: inline; }
   .bgm.playing { box-shadow: 0 0 18px rgba(255, 217, 138, 0.25); }
+
+  /* 影像放映厅：短片和网页动画 */
+  .hall-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin: 26px 0 22px; padding-top: 30px; border-top: 1px solid var(--line); }
+  .hall-head h2 { margin: 0; font-family: "ZCOOL XiaoWei", serif; font-weight: normal; font-size: clamp(28px, 4vw, 36px); letter-spacing: 0.12em;
+    background: linear-gradient(90deg, #ffe7b0, #ffb8d8 60%, #c8b8ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hall-head p { margin: 0; color: var(--dim); font-size: 14.5px; letter-spacing: 0.12em; }
+  .thumb .reel { position: absolute; z-index: 1; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
+    display: grid; place-items: center; background: rgba(20, 14, 40, 0.55); border: 1px solid rgba(255, 255, 255, 0.35); backdrop-filter: blur(4px);
+    transition: transform 0.25s ease, background 0.25s ease; }
+  .thumb .reel::before { content: ""; margin-left: 5px; border-style: solid; border-width: 11px 0 11px 18px; border-color: transparent transparent transparent #fff; }
+  .card:hover .thumb .reel { transform: scale(1.1); background: color-mix(in srgb, var(--accent) 55%, rgba(20, 14, 40, 0.6)); }
+  .player { width: min(1100px, 100vw - 32px); max-height: calc(100vh - 32px); padding: 0; border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+    background: #000; color: var(--text); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); }
+  .player::backdrop { background: rgba(8, 5, 20, 0.82); backdrop-filter: blur(4px); }
+  .player video { display: block; width: 100%; max-height: calc(100vh - 90px); background: #000; }
+  .player .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px 10px 18px; }
+  .player .bar h3 { margin: 0; font-family: "ZCOOL XiaoWei", serif; font-weight: normal; font-size: 20px; letter-spacing: 0.08em; color: var(--gold); }
+  .player .close { padding: 7px 14px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 14px; color: var(--text);
+    background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); }
+  .player .close:hover, .player .close:focus-visible { background: rgba(255, 255, 255, 0.16); outline: none; }
 
   footer { text-align: center; color: var(--dim); font-size: 13px; padding: 20px 0 48px; }
   footer a { color: var(--gold); text-decoration: none; }
@@ -123,6 +143,14 @@
     <span class="enter">进馆 →</span>
   </a>
   <main class="grid" id="grid"></main>
+  <section aria-labelledby="hall-h">
+    <div class="hall-head"><h2 id="hall-h">影像放映厅</h2><p>用代码画出来的短片和动画</p></div>
+    <div class="grid" id="demos"></div>
+  </section>
+  <dialog class="player" id="player" aria-labelledby="player-h">
+    <video controls playsinline preload="none"></video>
+    <div class="bar"><h3 id="player-h"></h3><button class="close" type="button" id="player-close">关闭</button></div>
+  </dialog>
   <footer>
     用 Claude 一起做的小游戏 · <a href="https://github.com/Hitanorain" target="_blank" rel="noopener">GitHub @Hitanorain</a>
   </footer>
@@ -198,6 +226,62 @@
         <div class="foot"><span class="device">${g.device}</span><span class="play">开始玩 <span aria-hidden="true">→</span></span></div>
       </div>
     </a>`).join('');
+
+  // 影像放映厅：想加新作品，在这里加一项（最新的放最前面），封面是 thumbs/<id>.jpg（16:10）。
+  //   video: 短片文件，点开在页面里播放；page: 网页作品的地址，点开直接进入
+  const DEMOS = [
+    {
+      id: 'tea-room', icon: '🍵', name: '茶室', en: 'Tea Room', accent: '#ffc890', badge: '电影短片', isNew: true,
+      video: 'demos/tea-room/tea-room.mp4',
+      desc: '冬日午后的四叠半茶室：炭火上的铁釜冒着热气，西窗的阳光穿过竹格，斜斜落在榻榻米和茶碗上。没有一张贴图、没有一段录音，房间、器物、光影，连松风、炭火和窗外的鸟鸣都是代码生成的，在浏览器里一帧一帧离线渲染成片。',
+      tags: ['three.js 离线渲染', '程序化建模', '体积光与水汽', '代码合成环境声'], device: '🎬 27 秒 · 1080p 60fps · 建议戴耳机',
+    },
+    {
+      id: 'tianwai', icon: '☄️', name: '天外来客', en: 'Visitor from Beyond', accent: '#ff9a6a', badge: '网页动画',
+      page: 'demos/tianwai/',
+      desc: '一颗彗星与一颗星球的相遇。撞击之后，岁月一年年流过，伤痕慢慢淡去，生命重新回来。全程约三分钟的实时网页动画，有字幕和声音。',
+      tags: ['实时动画', '程序化星球', '字幕叙事', '约 3 分钟'], device: '📱 🖥 建议横屏、戴耳机',
+    },
+  ];
+  const demos = document.getElementById('demos');
+  demos.innerHTML = DEMOS.map((d, i) => `
+    <a class="card" href="${d.video || d.page}" data-i="${i}" style="--accent:${d.accent};animation-delay:${0.08 + i * 0.1}s" aria-label="${d.name}">
+      <div class="thumb">
+        <img src="thumbs/${d.id}.jpg" alt="${d.name} 画面" loading="lazy" onerror="this.remove()">
+        <span class="badge">${d.badge}</span>
+        ${d.isNew ? '<span class="new">最近更新</span>' : ''}
+        ${d.video ? '<span class="reel" aria-hidden="true"></span>' : ''}
+      </div>
+      <div class="body">
+        <div class="title"><span class="ic">${d.icon}</span><h2>${d.name}</h2><small>${d.en}</small></div>
+        <p class="desc">${d.desc}</p>
+        <div class="tags">${d.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        <div class="foot"><span class="device">${d.device}</span><span class="play">${d.video ? '观看' : '打开'} <span aria-hidden="true">${d.video ? '▶' : '→'}</span></span></div>
+      </div>
+    </a>`).join('');
+  // 短片在页面里的播放窗口里放；放的时候主页的背景音乐先停下，关掉再接着放
+  (() => {
+    const dlg = document.getElementById('player'), video = dlg.querySelector('video'), h = document.getElementById('player-h');
+    if (!dlg.showModal) return; // 不支持 <dialog> 的浏览器直接打开视频文件
+    demos.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-i]');
+      const d = a && DEMOS[+a.dataset.i];
+      if (!d || !d.video) return;
+      e.preventDefault();
+      h.textContent = `${d.name} · ${d.en}`;
+      video.poster = `thumbs/${d.id}.jpg`;
+      video.src = d.video;
+      dispatchEvent(new Event('hub-bgm-hold'));
+      dlg.showModal();
+      video.play().catch(() => {});
+    });
+    document.getElementById('player-close').addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); }); // 点播放窗口外面也能关
+    dlg.addEventListener('close', () => {
+      video.pause(); video.removeAttribute('src'); video.load();
+      dispatchEvent(new Event('hub-bgm-release'));
+    });
+  })();
 
   // 背景里缓缓闪烁的星点
   const cv = document.getElementById('stars'), cx = cv.getContext('2d');
@@ -340,6 +424,10 @@
       if (document.hidden) { clearInterval(timer); timer = 0; ac.suspend(); }
       else { ac.resume(); nextT = ac.currentTime + 0.1; timer = setInterval(schedule, 150); }
     });
+    // 放映厅播短片时先让开（不改开关状态），关掉播放窗口后接着放
+    let held = false;
+    addEventListener('hub-bgm-hold', () => { held = btn.classList.contains('playing'); if (held) stop(); });
+    addEventListener('hub-bgm-release', () => { if (held && on) start(); held = false; });
     paint();
   })();
 </script>
