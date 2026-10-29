@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hitanorain 的游戏厅</title>
-<meta name="description" content="Hitanorain 做的网页游戏合集：欢乐连连看、观星者基金、织星、星叶守望、企鹅跑酷、Moon英语；还有影像放映厅里用代码渲染的短片《茶室》和网页动画《天外来客》。">
+<meta name="description" content="Hitanorain 做的网页游戏合集：欢乐连连看、观星者基金、织星、星叶守望、企鹅跑酷、Moon英语；还有影像放映厅里用代码渲染的短片《枯山水》《茶室》和网页动画《天外来客》。">
 <meta name="theme-color" content="#1b1636">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffd27a'/%3E%3Cstop offset='1' stop-color='%23ff8fc8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%231b1636'/%3E%3Cpath d='M40 12a20 20 0 1 0 12 28A16 16 0 0 1 40 12z' fill='url(%23g)'/%3E%3Ccircle cx='46' cy='18' r='3' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -231,7 +231,13 @@
   //   video: 短片文件，点开在页面里播放；page: 网页作品的地址，点开直接进入
   const DEMOS = [
     {
-      id: 'tea-room', icon: '🍵', name: '茶室', en: 'Tea Room', accent: '#ffc890', badge: '电影短片', isNew: true,
+      id: 'zen-garden', icon: '🍁', name: '枯山水', en: 'Zen Garden', accent: '#ff7a5c', badge: '电影短片', isNew: true,
+      video: 'demos/zen-garden/zen-garden.mp4',
+      desc: '深秋清晨的禅寺石庭：耙出的白砂纹、长着地衣的花岗岩、挂着露珠的青苔，一片红叶落进池塘漾开涟漪，水钵的竹管一滴一滴地落水，最后越过土墙，望见晨雾里的远山。每一粒砂、每一根苔茎都由代码生成，连鸟鸣、风声和远处的钟声也是。',
+      tags: ['三十万颗砂粒', '微距景深', '水面倒影', '代码合成环境声'], device: '🎬 30 秒 · 1080p 60fps · 建议戴耳机',
+    },
+    {
+      id: 'tea-room', icon: '🍵', name: '茶室', en: 'Tea Room', accent: '#ffc890', badge: '电影短片',
       video: 'demos/tea-room/tea-room.mp4',
       desc: '冬日午后的四叠半茶室：炭火上的铁釜冒着热气，西窗的阳光穿过竹格，斜斜落在榻榻米和茶碗上。没有一张贴图、没有一段录音，房间、器物、光影，连松风、炭火和窗外的鸟鸣都是代码生成的，在浏览器里一帧一帧离线渲染成片。',
       tags: ['three.js 离线渲染', '程序化建模', '体积光与水汽', '代码合成环境声'], device: '🎬 27 秒 · 1080p 60fps · 建议戴耳机',

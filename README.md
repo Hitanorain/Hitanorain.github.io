@@ -15,7 +15,7 @@
 2. 在 `index.html` 的 `DEMOS` 列表最前面加一项：短片写 `video: 'demos/<id>/<文件>.mp4'`，点开在页面里播放；网页写 `page: 'demos/<id>/'`，点开直接进入。
 3. 封面截图放到 `thumbs/<id>.jpg`（16:10，建议 1200×750）。
 
-现有作品：《茶室》（`demos/tea-room/`，源码在本机 `Projects/tea-room`）、《天外来客》（`demos/tianwai/`，源文件 `Projects/animation/天外来客.html`）。
+现有作品：《枯山水》（`demos/zen-garden/`，源码在本机 `Projects/zen-garden`）、《茶室》（`demos/tea-room/`，源码在本机 `Projects/tea-room`）、《天外来客》（`demos/tianwai/`，源文件 `Projects/animation/天外来客.html`）。
 
 ## 星叶档案馆（`archive/`）
 
