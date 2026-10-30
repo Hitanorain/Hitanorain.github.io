@@ -60,8 +60,8 @@
   .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
   .title { display: flex; align-items: center; gap: 10px; }
   .title .ic { font-size: 26px; }
-  .title h2 { margin: 0; font-family: "ZCOOL XiaoWei", serif; font-weight: normal; font-size: 28px; color: var(--accent); letter-spacing: 0.06em; }
-  .title small { color: var(--dim); font-size: 13px; }
+  .title h2 { margin: 0; font-family: "ZCOOL XiaoWei", serif; font-weight: normal; font-size: 28px; color: var(--accent); letter-spacing: 0.06em; white-space: nowrap; }
+  .title small { color: var(--dim); font-size: 13px; min-width: 0; }
   .desc { margin: 0; color: #ddd4f0; font-size: 14.5px; line-height: 1.7; flex: 1; }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag { font-size: 12px; padding: 3px 9px; border-radius: 8px; color: var(--dim); background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -231,7 +231,13 @@
   //   video: 短片文件，点开在页面里播放；page: 网页作品的地址，点开直接进入
   const DEMOS = [
     {
-      id: 'zen-garden', icon: '🍁', name: '枯山水', en: 'Zen Garden', accent: '#ff7a5c', badge: '电影短片', isNew: true,
+      id: 'grand-prismatic', icon: '♨️', name: '大棱镜泉', en: 'Grand Prismatic Spring', accent: '#ffa64d', badge: '电影短片', isNew: true,
+      video: 'demos/grand-prismatic/grand-prismatic.mp4',
+      desc: '黄石公园的秋日清晨：从林边望见逆光里的汽柱，钻进蒸汽，落到深蓝的泉眼上方，贴着池边掠过金黄的菌毯和一级级小台阶，再沿着橙红的水道飞出去，升上高空俯瞰整只「眼睛」，最后停在山坡的观景台上，远处一头麋鹿在叫。泉水、蒸汽、森林都由代码生成，风声、水声和鹿鸣也是。',
+      tags: ['一镜到底的飞行', '程序化热泉与菌毯', '体积蒸汽', '代码合成环境声'], device: '🎬 62 秒 · 1080p 60fps · 建议戴耳机',
+    },
+    {
+      id: 'zen-garden', icon: '🍁', name: '枯山水', en: 'Zen Garden', accent: '#ff7a5c', badge: '电影短片',
       video: 'demos/zen-garden/zen-garden.mp4',
       desc: '深秋清晨的禅寺石庭：耙出的白砂纹、长着地衣的花岗岩、挂着露珠的青苔，一片红叶落进池塘漾开涟漪，水钵的竹管一滴一滴地落水，最后越过土墙，望见晨雾里的远山。每一粒砂、每一根苔茎都由代码生成，连鸟鸣、风声和远处的钟声也是。',
       tags: ['三十万颗砂粒', '微距景深', '水面倒影', '代码合成环境声'], device: '🎬 30 秒 · 1080p 60fps · 建议戴耳机',
