@@ -7,6 +7,8 @@
 1. 在 `index.html` 里的 `GAMES` 列表加一项（`id` 就是仓库名，页面会链接到 `https://hitanorain.github.io/<id>/`）。
 2. 把一张 16:10 的截图（建议 1200×750 JPG）放到 `thumbs/<id>.jpg`。
 
+《萌鸡突围》不是单独的仓库，直接放在本仓库的 `mengji-shooter/` 里（网址同样是 `https://hitanorain.github.io/mengji-shooter/`）。源码在私有仓库 `mengji-island` 的 `shooter.html` 和 `shooter/`：更新时把 `shooter.html` 复制成 `mengji-shooter/index.html`，`shooter/*.js` 复制到 `mengji-shooter/shooter/`。
+
 ## 影像放映厅（`demos/`）
 
 主页游戏列表下面的短片和网页动画。加一个新作品：
